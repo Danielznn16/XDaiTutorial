@@ -56,7 +56,7 @@ Streamlit是一个快速前端，其特点是可以在Python端直接调用函�
 
 10. 将这个前端启动，并实现`mask_filling_llm`即可得到
 
-11. ![image-20230213144726349](/Users/zlnn/noICloud/XDaiTutorial/README.assets/image-20230213144726349.png)
+11. ![image-20230213144726349](./README.assets/image-20230213144726349.png)
 
 ## 后端快速搭建
 
