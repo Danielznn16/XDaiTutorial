@@ -1,8 +1,36 @@
-[toc]
-
 # 第二次技术培训
 
-大家好，之前振方已经分享过Docker的部署应用。考虑到大家都具有一定的Conda环境管理的经验，我们第二次技术培训主要聚焦于如何快速的把已有的工作做成demo方便汇报（本次不会介绍工业级的前端），基于此目前我们计划花半个小时至一个小时的时间给大家简单的介绍下
+大家好，之前振方已经分享过Docker的部署应用。考虑到大家都具有一定的Conda环境管理的经验，我们第二次技术培训主要聚焦于如何快速的把已有的工作做成demo方便汇报（本次不会介绍工业级的前端），基于此目前我们计划花半个小时至一个小时的时间给大家简单的介绍下。
+
+**目录**
+
+- [快速前端Streamlit](#----streamlit)
+  * [基本的输入输出](#-------)
+  * [一个简单的Demo](#-----demo)
+- [后端快速搭建](#------)
+  * [简单Json格式介绍](#--json----)
+  * [Flask快速Get/Post请求封装](#flask--get-post----)
+    + [Flask Get请求的例子](#flask-get-----)
+    + [Flask Post请求的例子](#flask-post-----)
+  * [FastAPI的模块化管理](#fastapi------)
+  * [FastAPI的模块化管理](#fastapi-------1)
+- [日志与数据管理（Mongo，pymongo；日常数据管理还有ES与Redis，不过我们不再进行展开了，需要时再学即可）](#--------mongo-pymongo---------es-redis---------------------)
+  * [读、写的基本调用](#--------)
+  * [数据更新与Upsert](#-----upsert)
+  * [索引简介（方便起见，直接使用Compass、可以使用其他工具）](#--------------compass----------)
+- [Git的使用](#git---)
+  * [GitLab项目与群组的创建和人员增减（以公司的为例）](#gitlab---------------------)
+  * [Access Token的创建与Git Clone](#access-token----git-clone)
+  * [Git add commit push pull的基本使用](#git-add-commit-push-pull-----)
+  * [Git branch 和 checkout、merge（简单的分支管理）](#git-branch---checkout-merge---------)
+  * [Issue的创建与commit时如何引用](#issue----commit-----)
+  * [Submodule简单介绍，与submodule-for的简单示例](#submodule------submodule-for-----)
+  * [自动部署的简单介绍（日常科研不一定用得到，简单介绍下概念）](#-----------------------------)
+- [Nginx简介（方便部署正式的工业级前端，与请求转发；Nginx只做简单介绍方便大家了解一个正式的前后端分离工程的部署）](#nginx----------------------nginx----------------------------)
+  * [什么是Nginx](#---nginx)
+  * [简单的负载均衡](#-------)
+  * [请求转发](#----)
+- [Bert 经典分类器训练](#bert--------)
 
 ## 快速前端Streamlit
 
@@ -250,11 +278,83 @@ app.include_router(conversation_app, prefix="/conversation")
 
 ## 日志与数据管理（Mongo，pymongo；日常数据管理还有ES与Redis，不过我们不再进行展开了，需要时再学即可）
 
+MongoDB是一种文档型数据库，与传统的关系型数据库不同，MongoDB以文档的形式存储数据，每个文档代表一个数据记录，并通过键值对的方式来组织数据。pymongo是一个与MongoDB交互的python库，可以用来读写数据。
+
+日常数据管理中，除了MongoDB还有其他数据库如ES与Redis，它们分别用于处理全文检索与缓存，但是由于这些不是我们本文的重点，所以不再详细展开。
+
 ### 读、写的基本调用
+
+如果要使用MongoDB进行数据管理，需要先安装MongoDB和pymongo。可以使用以下命令安装：
+
+```bash
+pip install pymongo
+```
+
+使用pymongo连接到MongoDB，代码如下：
+
+```python
+import pymongo
+
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client["database_name"]
+collection = db["collection_name"]
+```
+
+读数据可以通过find方法来实现，返回结果是一个游标，可以迭代访问所有数据：
+
+```python
+# 查询所有记录
+cursor = collection.find({})
+for record in cursor:
+    print(record)
+```
+
+写入数据，代码如下：
+
+```python
+post = {"author": "Mike",
+        "text": "My first blog post!",
+        "tags": ["mongodb", "python", "pymongo"],
+        "date": datetime.datetime.utcnow()}
+
+posts = db.posts
+post_id = posts.insert_one(post).inserted_id
+```
+
+读取数据，代码如下：
+
+```python
+query = {"author": "Mike"}
+new_values = {"$set": {"text": "My updated blog post!"}}
+
+posts.update_one(query, new_values)
+```
 
 ### 数据更新与Upsert
 
+更新数据，代码如下：
+
+```python
+query = {"author": "Mike"}
+new_values = {"$set": {"text": "My updated blog post!"}}
+
+posts.update_one(query, new_values)
+```
+
+Upsert，代码如下：
+
+```python
+query = {"author": "non_existing_author"}
+new_values = {"$set": {"text": "My updated blog post!"}}
+
+posts.update_one(query, new_values, upsert=True)
+```
+
 ### 索引简介（方便起见，直接使用Compass、可以使用其他工具）
+
+索引是对数据库中的数据进行组织的一种方式，有助于提高查询效率。
+
+可以直接在Compass，选择Colllection的index，构造索引。
 
 ## Git的使用
 
