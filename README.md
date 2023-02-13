@@ -28,7 +28,7 @@ Streamlit是一个快速前端，其特点是可以在Python端直接调用函�
 
 6. 即可看到前端
 
-7. ![image-20230213144457353](https://github.com/Danielznn16/XDaiTutorial/blob/master/README.assets/image-20230213144457353.png)
+7. ![image-20230213144726349.png](https://github.com/Danielznn16/XDaiTutorial/blob/master/README.assets/image-20230213144726349.png)
 
 8. ### 一个简单的Demo
 
