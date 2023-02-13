@@ -60,11 +60,191 @@ if input:
 
 ## 后端快速搭建
 
+后端快速搭建涵盖了以下几个方面：简单Json格式介绍、Flask快速Get/Post请求封装以及FastAPI的模块化管理。
+
 ### 简单Json格式介绍
+
+JSON（JavaScript Object Notation）是一种轻量级的数据交换格式，它的语法与JavaScript对象表示法相似。Json格式有如下特点：
+
+1. Json使用了JavaScript语法中的对象和数组。
+2. Json是一个字符串，用于传输或存储数据。
+3. Json的数据结构非常简洁，易于阅读和编写。
+
+Json具有轻量级、易于读写等优点，被广泛应用在web开发中。Json数据以键值对的形式存储，数据类型包括数字、字符串、布尔值、数组、对象等。
+
+下面是一个Json格式的例子：
+
+```json
+{
+    "name": "John Doe",
+    "age": 35,
+    "address": {
+        "street": "1234 Main St",
+        "city": "San Francisco",
+        "state": "CA"
+    },
+    "phoneNumbers": [
+        {
+            "type": "home",
+            "number": "555-555-1234"
+        },
+        {
+            "type": "work",
+            "number": "555-555-4321"
+        }
+    ]
+}
+```
 
 ### Flask快速Get/Post请求封装
 
-### （可能会有）FastAPI的模块化管理
+Flask是一个简单的Python Web框架，它支持快速的Get/Post请求封装。
+
+#### Flask Get请求的例子
+
+```python
+from flask import Flask, request
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    name = request.args.get('name')
+    return 'Hello, {}!'.format(name)
+
+if __name__ == '__main__':
+    app.run()
+```
+
+#### Flask Post请求的例子
+
+```python
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/api/data', methods=['POST']) # methods可以用来指定允许的请求类型
+def handle_data():
+    data = request.get_json()
+    # Do something with the data
+    return data
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+### FastAPI的模块化管理
+
+FastAPI允许我们把多个API路由分别存放在不同的模块，以方便代码维护。我们可以在主文件中通过加载模块并注册路由实现这一功能。
+
+例如，我们可以把所有位于`/user/*`路由下的服务封装进一个名为`user.py`的文件中，它的内容如下：
+
+```python
+# user.py
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.post("/user/signup")
+def signup_user(username: str, password: str):
+    return {"username": username, "password": password}
+
+@app.get("/user/{user_id}")
+def get_user_by_id(user_id: int):
+    return {"user_id": user_id}
+```
+
+然后，在主文件中加载该模块并注册路由：
+
+```python
+from fastapi import FastAPI
+from .user import app as user_app
+
+app = FastAPI()
+
+app.include_router(user_app, prefix="/user")
+```
+
+同样的，我们可以为对话服务创建一个名为`conversation.py`的文件：
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.post("/conversation")
+def start_conversation(text: str):
+    return {"text": text}
+
+@app.get("/conversation/{conversation_id}")
+def get_conversation_by_id(conversation_id: int):
+    return {"conversation_id": conversation_id}
+```
+
+好的，那么更新后的内容如下：
+
+### FastAPI的模块化管理
+
+FastAPI允许我们把多个API路由分别存放在不同的模块，以方便代码维护。我们可以在主文件中通过加载模块并注册路由实现这一功能。
+
+例如，我们可以把所有位于`/user/*`路由下的服务封装进一个名为`user.py`的文件中，它的内容如下：
+
+```python
+pythonCopy code
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.post("/signup")
+def signup_user(username: str, password: str):
+    return {"username": username, "password": password}
+
+@app.get("/{user_id}")
+def get_user_by_id(user_id: int):
+    return {"user_id": user_id}
+```
+
+然后，在主文件中加载该模块并注册路由：
+
+```python
+pythonCopy code
+from fastapi import FastAPI
+from .user import app as user_app
+
+app = FastAPI()
+
+app.include_router(user_app, prefix="/user") # 这样/user/signup调用的就是signup_user
+```
+
+同样的，我们可以为对话服务创建一个名为`conversation.py`的文件：
+
+```python
+pythonCopy code
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.post("/")
+def start_conversation(text: str):
+    return {"text": text}
+
+@app.get("/{conversation_id}")
+def get_conversation_by_id(conversation_id: int):
+    return {"conversation_id": conversation_id}
+```
+
+最后，在主文件中加载该模块并注册路由：
+
+```python
+from fastapi import FastAPI
+from .user import app as user_app
+from .conversation import app as conversation_app
+
+app = FastAPI()
+
+app.include_router(user_app, prefix="/user")
+app.include_router(conversation_app, prefix="/conversation")
+```
+
+这种方法的好处是，即使应用的路由很多，只要路由在同一个模块下，可以非常容易地管理，也可以方便地将同一类型的路由模块抽象出来，达到复用的目的。
 
 ## 日志与数据管理（Mongo，pymongo；日常数据管理还有ES与Redis，不过我们不再进行展开了，需要时再学即可）
 
