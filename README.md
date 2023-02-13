@@ -60,31 +60,41 @@ if input:
 
 ## 后端快速搭建
 
-简单Json格式介绍
-Flask快速Get/Post请求封装
-（可能会有）FastAPI的模块化管理
+### 简单Json格式介绍
+
+### Flask快速Get/Post请求封装
+
+### （可能会有）FastAPI的模块化管理
 
 ## 日志与数据管理（Mongo，pymongo；日常数据管理还有ES与Redis，不过我们不再进行展开了，需要时再学即可）
 
-读、写的基本调用
-数据更新与Upsert
-索引简介（方便起见，直接使用Compass、可以使用其他工具）
+### 读、写的基本调用
+
+### 数据更新与Upsert
+
+### 索引简介（方便起见，直接使用Compass、可以使用其他工具）
 
 ## Git的使用
 
-GitLab项目与群组的创建和人员增减（以公司的为例）
-Access Token的创建与Git Clone
-Git add commit push pull的基本使用
-Git branch 和 checkout、merge（简单的分支管理）
-Issue的创建与commit时如何引用
-Submodule简单介绍，与submodule-for的简单示例
-自动部署的简单介绍（日常科研不一定用得到，简单介绍下概念）
+### GitLab项目与群组的创建和人员增减（以公司的为例）
+
+### Access Token的创建与Git Clone
+
+### Git add commit push pull的基本使用
+
+### Git branch 和 checkout、merge（简单的分支管理）
+
+### Issue的创建与commit时如何引用
+### Submodule简单介绍，与submodule-for的简单示例
+### 自动部署的简单介绍（日常科研不一定用得到，简单介绍下概念）
 
 ## Nginx简介（方便部署正式的工业级前端，与请求转发；Nginx只做简单介绍方便大家了解一个正式的前后端分离工程的部署）
 
-什么是Nginx
-简单的负载均衡
-请求转发
+### 什么是Nginx
+
+### 简单的负载均衡
+
+### 请求转发
 
 ## Bert 经典分类器训练
 
