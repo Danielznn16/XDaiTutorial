@@ -8,16 +8,18 @@ Streamlit是一个快速前端，其特点是可以在Python端直接调用函�
 
 ### 基本的输入输出
 
-一个基本的Streamlit输入输出可以参考如下的形式```python
+一个基本的Streamlit输入输出可以参考如下的形式
+
+```python
 # streamlit_io.py
 # 引入Streamlit包
 import streamlit as st
+
 # 获取输入文本
 text = st.text_input("Input Something")
 # 输出文本
 st.text(text)
 ```
-
 之后运行
 
 ```bash
@@ -87,4 +89,3 @@ Submodule简单介绍，与submodule-for的简单示例
 ## Bert 经典分类器训练
 
 Note: 除了Demo之外，虽然现在超大模型的影响力与日俱增，但BERT等模型的使用还是很多的。因此我还会顺带过一下经典的Bert分类器训练（使用transformers库的trainer）
-
