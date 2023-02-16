@@ -2,35 +2,7 @@
 
 大家好，之前振方已经分享过Docker的部署应用。考虑到大家都具有一定的Conda环境管理的经验，我们第二次技术培训主要聚焦于如何快速的把已有的工作做成demo方便汇报（本次不会介绍工业级的前端），基于此目前我们计划花半个小时至一个小时的时间给大家简单的介绍下。
 
-**目录**
 
-- [快速前端Streamlit](#----streamlit)
-  * [基本的输入输出](#-------)
-  * [一个简单的Demo](#-----demo)
-- [后端快速搭建](#------)
-  * [简单Json格式介绍](#--json----)
-  * [Flask快速Get/Post请求封装](#flask--get-post----)
-    + [Flask Get请求的例子](#flask-get-----)
-    + [Flask Post请求的例子](#flask-post-----)
-  * [FastAPI的模块化管理](#fastapi------)
-  * [FastAPI的模块化管理](#fastapi-------1)
-- [日志与数据管理（Mongo，pymongo；日常数据管理还有ES与Redis，不过我们不再进行展开了，需要时再学即可）](#--------mongo-pymongo---------es-redis---------------------)
-  * [读、写的基本调用](#--------)
-  * [数据更新与Upsert](#-----upsert)
-  * [索引简介（方便起见，直接使用Compass、可以使用其他工具）](#--------------compass----------)
-- [Git的使用](#git---)
-  * [GitLab项目与群组的创建和人员增减（以公司的为例）](#gitlab---------------------)
-  * [Access Token的创建与Git Clone](#access-token----git-clone)
-  * [Git add commit push pull的基本使用](#git-add-commit-push-pull-----)
-  * [Git branch 和 checkout、merge（简单的分支管理）](#git-branch---checkout-merge---------)
-  * [Issue的创建与commit时如何引用](#issue----commit-----)
-  * [Submodule简单介绍，与submodule-for的简单示例](#submodule------submodule-for-----)
-  * [自动部署的简单介绍（日常科研不一定用得到，简单介绍下概念）](#-----------------------------)
-- [Nginx简介（方便部署正式的工业级前端，与请求转发；Nginx只做简单介绍方便大家了解一个正式的前后端分离工程的部署）](#nginx----------------------nginx----------------------------)
-  * [什么是Nginx](#---nginx)
-  * [简单的负载均衡](#-------)
-  * [请求转发](#----)
-- [Bert 经典分类器训练](#bert--------)
 
 ## 快速前端Streamlit
 
@@ -360,24 +332,138 @@ posts.update_one(query, new_values, upsert=True)
 
 ### GitLab项目与群组的创建和人员增减（以公司的为例）
 
+（见视频）
+
 ### Access Token的创建与Git Clone
+
+可在项目设置或个人设置创建`Access Token`
+
+创建后，对不能http的clone链接 可以添加access token进行clone
+
+```bash
+git clone https://{随便填什么都可以}:{这里放access token}@git......
+```
 
 ### Git add commit push pull的基本使用
 
+git add {file} 将本地修改添加到下次commit中
+
+git commit -m "{message}"将当前的修改组合成commit（相当于一个代码版本）
+
+git push 将本地的commit提交到远程服务器
+
+----
+
+git pull 从服务器把commit下载到本地并更新本地的代码
+
 ### Git branch 和 checkout、merge（简单的分支管理）
 
+git中存在分支，使用`git branch`可以查看当前分支
+
+可用如下指令创建一个新的分支
+
+```bash
+git branch {branch_name}
+```
+
+之后可以使用checkout指令来在分支之间切换
+
+```
+git checkout {branch_name}
+```
+
+一般git创建时会构造主分支，一般叫`main`、`master`。在实际的工程开发之中不建议直接修改主分支。
+
+在工业开发中一般有两种分支管理模式，一种是每个开发者一个分支，这个的好处是方便每个人开发的时候，在自己的分支上改完，并合并分支上的代码就可以将每个人的修改都统合到一起。
+
+另一种模式是每一个任务分成一个分支，这样的优点在于每个任务都有独立的分支，方便按照task进行管理。
+
+实际场景下，可能二者都会得到使用。
+
+----
+
+不同的分支之间可以互相同步commit以将不同的分支的代码合并
+
+可以使用git merge {target_branch}来将target_branch的commit统合进当前所在branch
+
 ### Issue的创建与commit时如何引用
+
+在大型项目中，往往很多个commit会对应于同一个task，为了方便代码回溯和管理，可在git界面常见issue，每个issue会有对应的issue id，比如`23`则可以在commit时引用issue`git commit "commit for issue #23"`引用了issue的commit可以在issue里面找到。
+
 ### Submodule简单介绍，与submodule-for的简单示例
+
+git 引入了一个模块化的概念，submodule，这里不做过于详细的介绍。只是给出一个常用的指令
+
+```bash
+git submodule foreach "{script}"
+```
+
+比如
+
+```bash
+git submodule foreach "git pull"
+```
+
+会对当前git下所有的子模块执行git pull
+
 ### 自动部署的简单介绍（日常科研不一定用得到，简单介绍下概念）
+
+编写CICD可以实现自动的代码部署和测试。当然需要提前有执行CICD的服务器。
+
+一般CICD的服务器在部署完成后，可以选择是否绑定具体的group或project等，并在编写CICD时可以通过过滤条件去指定在执行时使用哪些服务器。
 
 ## Nginx简介（方便部署正式的工业级前端，与请求转发；Nginx只做简单介绍方便大家了解一个正式的前后端分离工程的部署）
 
 ### 什么是Nginx
 
+一个非常高效的HTTP和反向代理服务器，日常使用中只需要记住这个可以帮我们做路由分发和负载均衡
+
 ### 简单的负载均衡
+
+```nginx
+upstream glm_130b {
+	least_conn;
+        server 0.0.0.0:5001;
+        server 0.0.0.0:5002;
+        server 0.0.0.0:5003;
+        #server 0.0.0.0:5004;
+	#server 0.0.0.0:5005; # node38 cuda0123
+	server 0.0.0.0:5006;
+    }
+    server{
+        listen 9011;
+        location / {
+            proxy_pass http://glm_130b/;
+        }
+    }
+```
+
+一个用于对130B请求做负载均衡的Nginx服务
 
 ### 请求转发
 
+```nginx
+server {
+  listen 80;
+  server_name 0.0.0.0;
+
+  location /serve/ {
+    proxy_pass http://0.0.0.0:8090/;
+  }
+  location ^~ /note/ {
+    proxy_pass http://0.0.0.0:6098/;
+  }
+  location ^~ /api/ {
+    proxy_pass http://0.0.0.0:5003/;
+  }
+}
+```
+
+一个我私人服务器上实现的Nginx。
+
+修改好nginx的配置文件后`nginx -s reload`以刷新
+
 ## Bert 经典分类器训练
 
-Note: 除了Demo之外，虽然现在超大模型的影响力与日俱增，但BERT等模型的使用还是很多的。因此我还会顺带过一下经典的Bert分类器训练（使用transformers库的trainer）
+可以参考HOSMEL的训练代码，见[这里](https://github.com/THUDM/HOSMEL/blob/main/MCMention/train.py)
+
