@@ -136,6 +136,13 @@ if __name__ == '__main__':
 
 ### FastAPI的模块化管理
 
+```
+# With Frontend
+api解析层(前端/其他服务--> 匹配到对应的解析函数 --> 在解析函数里（解析参数、调用执行的函数、把返回的值加一个Wrapper）--> 返回给前端)
+Service层（API层往服务层传参数）--> 执行逻辑和功能（调用别的模块、数据交互（调用数据层））--> 返回给API层
+数据/DB层（Service层传来参数和求类型）--> 更新或调用数据库的服务 --> 返回获取的数据或更新的结果
+```
+
 FastAPI允许我们把多个API路由分别存放在不同的模块，以方便代码维护。我们可以在主文件中通过加载模块并注册路由实现这一功能。
 
 例如，我们可以把所有位于`/user/*`路由下的服务封装进一个名为`user.py`的文件中，它的内容如下：
@@ -145,11 +152,11 @@ FastAPI允许我们把多个API路由分别存放在不同的模块，以方便�
 from fastapi import FastAPI
 app = FastAPI()
 
-@app.post("/user/signup")
+@app.post("/signup")
 def signup_user(username: str, password: str):
     return {"username": username, "password": password}
 
-@app.get("/user/{user_id}")
+@app.get("/{user_id}")
 def get_user_by_id(user_id: int):
     return {"user_id": user_id}
 ```
@@ -293,15 +300,6 @@ posts = db.posts
 post_id = posts.insert_one(post).inserted_id
 ```
 
-读取数据，代码如下：
-
-```python
-query = {"author": "Mike"}
-new_values = {"$set": {"text": "My updated blog post!"}}
-
-posts.update_one(query, new_values)
-```
-
 ### 数据更新与Upsert
 
 更新数据，代码如下：
@@ -341,7 +339,7 @@ posts.update_one(query, new_values, upsert=True)
 创建后，对不能http的clone链接 可以添加access token进行clone
 
 ```bash
-git clone https://{随便填什么都可以}:{这里放access token}@git......
+git clone https://zlnn:ovNRgAx8-Yo3-QfeyU1h@dev.aminer.cn/hello-gitlab/tmp.git
 ```
 
 ### Git add commit push pull的基本使用
@@ -465,5 +463,29 @@ server {
 
 ## Bert 经典分类器训练
 
+Huggingface/transformers
+
 可以参考HOSMEL的训练代码，见[这里](https://github.com/THUDM/HOSMEL/blob/main/MCMention/train.py)
+
+### HuggingFace 模型的使用
+
+HuggingFace官方可能更喜欢Pipeline，但是我们更建议大家使用Tokenizer和模型分别启动的方式
+
+```python
+from transformers import AutoTokenizer, AutoModelForMultipleChoice
+tokenizer = AutoTokenizer.from_pretrained({ckpt_path/ckpt_name})
+model = AutoModelForMultipleChoice.from_pretrained({ckpt_path/ckpt_name})
+
+# An example from HOSMEL
+def topkMention(q,mentions,K=3):
+	questions = [q]*len(mentions)
+	tokenized = tokenizer(questions,mentions,padding=True,truncation=True,return_tensors="pt",max_length=128)
+	tokenized = {k:v.to(device) for k,v in tokenized.items()}
+	
+	returned = model(**{k:v.unsqueeze(0) for k,v in tokenized.items()})
+	logits = returned.logits[0].cpu().detach().numpy()
+	mentions = [(mentions[i],logits[i]) for i in range(len(mentions))]
+	mentions.sort(key=lambda x:x[1],reverse=True)
+	return mentions[:K]
+```
 
